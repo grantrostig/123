@@ -43,12 +43,14 @@
 #include <gsl/gsl> // sudo dnf install  guidelines-support-library-devel
 //#include <bits/stdc++.h>
 #include <bitset>
+#include <bit>
 #include <cassert>
 #include <chrono>
 #include <climits>
 #include <csignal>
 #include <iostream>
 #include <optional>
+#include <stdfloat>
 #include <source_location>
 #include <string>
 #include <stacktrace>
@@ -58,13 +60,17 @@ using std::cin; using std::cout; using std::cerr; using std::clog; using std::en
 using namespace std::string_literals;
 using namespace std::chrono_literals;
 
-static_assert(CHAR_MIN < 0, "char is signed");
-//static_assert(CHAR_MIN == 0, "char is unsigned");
+static_assert(CHAR_MIN < 0, "Char is signed.");
+//static_assert(CHAR_MIN == 0, "Char is unsigned.");
 #if CHAR_MIN < 0
-    #pragma message("char is signed")
+    #pragma message("$$ Char is signed.")
 #else
-    #pragma message("char is unsigned")
+    #pragma message("$$ Char is unsigned.")
 #endif
+static_assert(std::endian::native == std::endian::little, "Memory is little endian.");
+//static_assert(std::endian::native == std::endian::big,    "Memory is big endian.");
+#pragma message("$$ Memory is little endian.")
+#pragma message("$$ Twos Complement integer math most common, and C++ standard required since C++20.")
 using Ostring       = std::optional<std::string>;
 using Ochar         = std::optional<char>;
 using Ointegral     = std::optional<long>;
@@ -116,7 +122,8 @@ operator<<( std::ostream & out, Container const & c) {
     if ( not c.empty()) {
         out << "[<";   //out.width(9);  // TODO??: neither work, only space out first element. //out << std::setw(9);  // TODO??: neither work, only space out first element.
         std::copy(c.begin(), c.end(), std::ostream_iterator< typename Container::value_type >( out, ">,<" ));
-        out << "\b\b\b>]"; out.width(); out << std::setw(0);
+        //cout << "\b\b\b>]"; out.width(); out << std::setw(0);
+        out << "\b\b\b>]"; out.width(); out << std::setw(0) << " ";
     } else out << "[CONTAINTER IS EMPTY]";
     return out;
 }
@@ -240,8 +247,6 @@ auto crash_signals_register() -> void {
 } // End Namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 // ++++++++++++++++ EXAMPLEs begin ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-namespace Example1 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-
 const std::array<std::string, 3000> WORDS
     { "a",
       "abandon",
@@ -3243,7 +3248,9 @@ const std::array<std::string, 3000> WORDS
       "yourself",
       "youth",
       "zone" };
+namespace Example1 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
+/* Gen AI answers that don't make sense?
 template <typename T>  // Gen AI answer
 void packBits(const std::vector<T>& data, std::vector<bool>& container) {
     // Check if input data size is a multiple of 4 (number of 6-bit objects per byte)
@@ -3275,11 +3282,22 @@ void shift6BitObjectIntoContainer(std::vector<bool>& container, int start, int o
         container[start + i] = (object >> (5 - i)) & 1;
     }
 }
+*/
+
+void print_bitset(std::bitset<132> bs, int count) {
+    for (int i{bs.size()-1}; i >= 0 ; --i ) {
+        //cout << "index:" << i <<":";
+        cout << bs[i];
+        if ( i !=0 && i%count ==0 ) cout << "'";
+    }
+    cout << "." << endl;
+}
 
 void test1 () {                     std::cout<< "START                Example1 test1. ++++++++++++++++++++++++"<<std::endl;
     std::srand(std::time(nullptr)); // use current time as seed for random generator
     struct Counter {
-        std::array<uint8_t, 32> words_single_char{ '@',
+        std::array<uint8_t, 32> words_single_char{
+                                        '@',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         //  std::rand()/ ((RAND_MAX + 1u) / 256),
                                         'A',
@@ -3290,6 +3308,18 @@ void test1 () {                     std::cout<< "START                Example1 t
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         'Z',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '[',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '\\',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        ']',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '^',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '_',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '\'',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         'a',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         'b',
@@ -3298,25 +3328,14 @@ void test1 () {                     std::cout<< "START                Example1 t
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         'z',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '{',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        '|',
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         '}',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         '~',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
                                         'W',
                                         // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
@@ -3348,60 +3367,125 @@ void test1 () {                     std::cout<< "START                Example1 t
     Counter counter{};
     cout<< "$$ W is bits: 101 0111.\n"; cout<< "$$ Counter.words_.size(): " << counter.words_single_char.size() << ", list: " << counter.words_single_char << endl;
 
-    // construct binary key
-    std::bitset<132> chars_bits{};
-    std::bitset<132> chars_bits2{chars_bits};
+    // *** Construct binary key ***
     using bits6_ut = struct { uint8_t bits6_ :6; };
     struct bits6_st { uint8_t bits6_ :6; };
+    std::bitset<132> chars_bits{};
 
     for ( size_t i{0}; i < chars_bits.size()/6; ++i) {
-        chars_bits  <<= 6;
-        chars_bits2 <<= 6;
-
-        bits6_ut tempu {static_cast<bits6_ut>(counter.words_single_char.at(i))};
-        bits6_st temps {static_cast<bits6_st>(counter.words_single_char.at(i))};
-
+        if (i != 0 ) chars_bits  <<= 6;
         std::bitset<6>   char_bits6{counter.words_single_char.at(i)};  // TODO??: I cutoff 2 bits, but no warning??
         std::bitset<132> char_bits132{char_bits6.to_ulong()};
-        //chars_bits |= char_bits6;  // TODO??: Strange error message with &bits6_ut ?
-        chars_bits |= char_bits132;
-        cout << "$$ Counter, bits: " <<std::setw(3)<< i <<","<< chars_bits <<".\n";
-
-        /* std::bitset<132> char_bits132x{counter.words_single_char.at(i)};
-        chars_bits2 |= char_bits132x;
-        cout << "$$ Counter,bits2: " <<std::setw(3)<< i <<","<< chars_bits2 <<".\n";
-
-        //std::transform(chars_bits.begin()); */
+        chars_bits |= char_bits132;                                          //chars_bits |= char_bits6;  // TODO??: Strange error message with &bits6_ut ?
+        //cout << "$$ Counter, bits: " <<std::setw(3)<< i <<",";
+        //print_bitset(chars_bits,6);
     }
+    print_bitset(chars_bits,6);
 
+    // *** Decode binary key to full words vector ***
     std::vector<std::string> full_words{};
-    std::bitset<132>         ones_6_of_132{"111111"};
+    std::bitset<132>         mask_ones_6_of_132{   "111111"};
+    std::bitset<132>         mask_ones_7th_of_132{"1000000"};
     std::bitset<132>         chars_bits_temp{chars_bits};
 
-    for (int i = 0; i < 32; ++i) {
-        bits6_ut bits_6;
-        std::bitset<6>   char_bits_6{counter.words_single_char.at(i)};  // TODO??: I cutoff 2 bits, but no warning??
-        std::bitset<132> char_bits_132 {char_bits_6.to_ulong()};
+    for (size_t i = 0; i < 22; ++i) {  // get char, fix char, use char to lookup word, add to words
 
+        std::bitset<132> bits_6_of_132{ chars_bits_temp & mask_ones_6_of_132};      // Grab one 6 bit char
+        std::bitset<132> bits_7_of_132{ bits_6_of_132   | mask_ones_7th_of_132};    // Add top bit, ie. the 7th to make it US ASCII.
 
-        std::bitset<132> ones_6_of_132   {"111111"};
-        std::bitset<132> ones_7th_of_132 {"1000000"};
-        std::bitset<132> bits_6_of_132   {chars_bits & ones_6_of_132};
-        std::bitset<132> bits_7_of_132   {ones_6_of_132 | ones_7th_of_132};  // add top bit, ie. the 7th.
-
-        size_t index{static_cast<size_t>(bits_7_of_132.to_ulong())};
+        size_t index{static_cast<size_t>(bits_7_of_132.to_ulong())};                // Convert US ASCII bits to an integer index.
         std::string word{WORDS.at(index)};
         full_words.push_back(word);
         chars_bits_temp >>= 6;
-        cout << "$$ Index, word, size: " << index<<","<<word << "," << full_words.size()<<endl;
+        print_bitset(bits_6_of_132,8);
+        print_bitset(bits_7_of_132,8);
+        cout << "$$ Loop_i, index, word, size:\n";
+        cout << i <<","<< index<<","<<word << "," << full_words.size()<<endl;
+        print_bitset(chars_bits_temp, 6);
     }
-    cout << "$$ Works, size: " << full_words.size()<<"<"<< full_words << endl;
+    cout << "$$ Words after, size: " << full_words.size() <<", "<< full_words << endl;
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
-} } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNcounter.words_.size() << endl;
+} } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+
+namespace Example2 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+/*
+struct Key_strange_alt {
+    bool wide_bits :132 {1};
+};
+
+#pragma pack(1)
+struct Key {
+    uint8_t  char01 :6 {0x3F};
+    uint8_t  char02 :6 {0x3F};  //uint8_t  char02 :6 {0b1111'1111};
+    uint8_t  char03 :6 {0x3F};  //uint8_t  char05 :6 {0b0001'1111};
+    uint8_t  char04 :6 {0x3F};  //uint8_t  char03 :6 {0b0001'1111};
+    uint8_t  char05 :6 {0x3F};  //uint8_t  char04 :6 {0b1111'1111};
+    uint8_t  char06 :6 {0x3F};
+    uint8_t  char07 :6 {0x3F};
+    uint8_t  char08 :6 {0x3F};
+    uint8_t  char09 :6 {0x3F};
+    uint8_t  char10 :6 {0x3F};
+    uint8_t  :4;                // filler for 64 bits
+#if 0
+    //uint8_t  char11 :6 {0x3F};
+    //uint8_t  char12 :6 {0x3F};
+    //uint8_t  char13 :6 {0x3F};
+    //uint8_t  char14 :6 {0x3F};
+    //uint8_t  char15 :6 {0x3F};
+    //uint8_t  char16 :6 {0x3F};
+    //uint8_t  char17 :6 {0x3F};
+    //uint8_t  char18 :6 {0x3F};
+    //uint8_t  char19 :6 {0x3F};
+    //uint8_t  char20 :6 {0x3F};
+    //uint8_t  char21 :6 {0x3F};
+    //uint8_t  :2;                // filler for 128 bits
+#endif
+};
+#pragma pack()
+
+//uint128_t test128;
+
+void test1 () {                     std::cout<< "START                Example1 test1. ++++++++++++++++++++++++"<<std::endl;
+    Key key1;  //Key key2{}; Key key3{0};
+    cout << "$$ Size Key:"<< sizeof(Key) << endl;
+    cout << "$$ Size ull:"<< sizeof(unsigned long long) << endl;
+    cout << "$$ Size ld:"<<  sizeof(long double) << endl;
+    //cout << "$$ Size :"<<  sizeof(std::float128_t) << endl;
+
+    std::bitset<72> bitset1{ * reinterpret_cast<unsigned long long *>(&key1) };
+    std::bitset<72> bitset2{ std::bit_cast<unsigned long long>(key1) };
+    //std::bitset<72> bitset3{ * reinterpret_cast<long double *>(&key1) };
+    //std::bitset<72> bitset4{ std::bit_cast<long double>(key1) };
+
+    cout << "$$ bitset1: "<< bitset1 << endl;
+    cout << "$$ bitset2: "<< bitset2 << endl;
+
+    //cout << bs.to_ullong() << endl;
+    cout << "$$ std::hex:" << std::hex << bitset1.to_ullong() << endl;
+    cout << "$$ std::hex:" << std::hex << bitset2.to_ullong() << endl;
+
+    cout << std::setbase(6);
+    cout << (int)key1.char01 << (int)key1.char02  << (int)key1.char03  << (int)key1.char04  << (int)key1.char05  << (int)key1.char06 <<  endl;
+    cout << (int)key1.char07 << (int)key1.char08  << (int)key1.char09  << (int)key1.char10  << endl;
+#if 0
+    cout << (int)key1.char11 << (int)key1.char12  << (int)key1.char13  << (int)key1.char14  << (int)key1.char15  << (int)key1.char16 <<  endl;
+    cout << (int)key1.char17 << (int)key1.char18  << (int)key1.char19  << (int)key1.char20  << endl;
+    cout << (int)key1.char21  << (int)key1.char22 <<  endl;
+#endif
+
+    cout << std::setbase(8);
+    //cout << std::setbase(16) << (int)key1.char01 << (int)key1.char02  << (int)key1.char03  << (int)key1.char04  << (int)key1.char05  << (int)key1.char06 <<  endl;
+    //cout << std::setbase(16) << (long)key1.char01 << (long)key1.char02  << (long)key1.char03  << (long)key1.char04  << (long)key1.char05  << (long)key1.char06 <<  endl;
+    //cout << std::hex        << key1.char01 << key1.char02  << key1.char03  << key1.char04  << key1.char05  << key1.char06 <<  endl;
+
+    std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
+} */
+} // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
 
     Example1::test1 ();
+    //Example2::test1 ();
 
     cout << "###" << endl;
     return EXIT_SUCCESS;
