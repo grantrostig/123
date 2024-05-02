@@ -30,32 +30,41 @@ QMAKE_CXXFLAGS += \
         -fconcepts              \
         #-pedantic              \
         #-pedantic-errors       \
-        #-fsanitize=undefined #60K link errors possible   \
+        #-fsanitize=undefined      # 60K link errors possible   \
+        #-fsanitize=address     \  # memory stuff.
         -Wall   		        \  # https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
         -Wextra   		        \
         -Weffc++                \
         -Wconversion            \
         -Wsign-conversion       \
         -Wdeprecated-declarations\
+        -Wwrite-strings      \
+        #-Wno-write-strings      \
         #-Wno-comment 		    \
         #-Wno-uninitialized 	\
         #-Wno-reorder 		    \
         -Wno-unused-parameter 	\
-        -Wno-unused-const-variable   \
-        -Wno-unused-variable   \
+        -Wno-unused-const-variable \
+        -Wno-unused-variable    \
         #-std=c++17             \
         #-std=gnu++17           \
         #-std=gnu++1z           \
         #-std=c++20             \
         #-std=gnu++20           \
         #-std=c++2a             \
-        #-DBOOST_LOG_DYN_LINK   \  		# on compile line not link line.
-        #-DBOOST_SYSTEM_NO_DEPRECATED \  	# not sure what it does.
+        #-DBOOST_LOG_DYN_LINK   \       # on compile line not link line.
+        #-DBOOST_SYSTEM_NO_DEPRECATED \ # not sure what it does.
 
 LIBS += \
         -lpthread               \
         -lrt                    \
-        -lstdc++_libbacktrace   \
+        #-lasan                  \
+                                \
+        #-lstdc++_libbacktrace   \ # fails: workaround for missing: -lstdc++_libbacktrace also:--enable-libstdcxx-backtrace also -static-libstdc++       \
+        #-lstdc++                \ #  Pedantic not needed???
+        #-lc++                \ #  clag Pedantic not needed???
+        #-static-libstdc++       \
+                                \
         #-lboost_system         \
         #-lboost_coroutine      \
         #-lssl                  \  #  missing this still: undefined reference to symbol 'd2i_PrivateKey_bio@@OPENSSL_1_1_0  related to: OPENSSL_API_COMPAT

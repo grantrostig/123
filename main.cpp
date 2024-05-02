@@ -41,7 +41,9 @@
 //#include "global_entities.h"
 #include <cmath>
 #include <gsl/gsl> // sudo dnf install  guidelines-support-library-devel
+
 //#include <bits/stdc++.h>
+
 #include <bitset>
 #include <bit>
 #include <cassert>
@@ -51,8 +53,8 @@
 #include <iostream>
 #include <optional>
 #include <stdfloat>
-#include <source_location>
 #include <string>
+#include <source_location>
 #include <stacktrace>
 #include <vector>
 
@@ -151,7 +153,7 @@ auto crash_tracer_SIGABRT(int signal_number) -> void {
     return;
 }
 
-/** Prints a stack trace of crash location.  Used for debugging. */
+/** Prints a stacktrace of crash location.  Used for debugging. */
 auto crash_tracer(int signal_number) -> void {
     cerr << "\n\r:CRASH_ERROR:Got signal number:" << signal_number;
     cerr << "\n\r:./stack_trace::current():" << std::stacktrace::current() <<":END CRASH_ERROR STACK_TRACE."<<endl;
@@ -3287,7 +3289,8 @@ void shift6BitObjectIntoContainer(std::vector<bool>& container, int start, int o
 void print_bitset(std::bitset<132> bs, int count) {
     for (int i{bs.size()-1}; i >= 0 ; --i ) {
         //cout << "index:" << i <<":";
-        cout << bs[i];
+        //cout << bs[i];
+        cout << bs.test(i);
         if ( i !=0 && i%count ==0 ) cout << "'";
     }
     cout << "." << endl;
@@ -3397,11 +3400,11 @@ void test1 () {                     std::cout<< "START                Example1 t
         std::string word{WORDS.at(index)};
         full_words.push_back(word);
         chars_bits_temp >>= 6;
-        print_bitset(bits_6_of_132,8);
-        print_bitset(bits_7_of_132,8);
-        cout << "$$ Loop_i, index, word, size:\n";
-        cout << i <<","<< index<<","<<word << "," << full_words.size()<<endl;
-        print_bitset(chars_bits_temp, 6);
+        // print_bitset(bits_6_of_132,8);
+        // print_bitset(bits_7_of_132,8);
+        // cout << "$$ Loop_i, index, word, size:\n";
+        // cout << i <<","<< index<<","<<word << "," << full_words.size()<<endl;
+        // print_bitset(chars_bits_temp, 6);
     }
     cout << "$$ Words after, size: " << full_words.size() <<", "<< full_words << endl;
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
@@ -3443,6 +3446,8 @@ struct Key {
 };
 #pragma pack()
 
+// TODO??: What about alignas() and depreciated: "std::aligned_storage"?
+
 //uint128_t test128;
 
 void test1 () {                     std::cout<< "START                Example1 test1. ++++++++++++++++++++++++"<<std::endl;
@@ -3481,10 +3486,48 @@ void test1 () {                     std::cout<< "START                Example1 t
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
 } */
 } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+char * f( char * c_string_io) {  // Function signature is fixed, don't change it.
+    char *          x1  {"xx"};
+    char            x2[]{"xx"};
+    char const      x3[]{"xx"};
+    char constexpr  x4[]{"xx"};
+    char static     x5[]{"xx"};
+    auto d1{[](auto p){std::cout<<"DELETINGd1.\n"; delete[] p;}};
+    auto d2{[](auto p){std::cout<<"DELETINGd2.\n"; delete   p;}};
 
+  //std::unique_ptr<char[]>                                                               static       x6{new char[]("xx")};  // TODO??: Why not this when below works?
+
+    std::unique_ptr<char[]>                                                               static       x7{new char[]{'x','x',0}};  // TODO??: works when {}s not ()s
+    std::unique_ptr<char[]>                                                               static       x8{new char[]{"xx"}};  // TODO??: works when {}s not ()s
+
+    std::unique_ptr<char[], decltype([](auto p){std::cout<<"DELETING9.\n"; delete[] p;})> static const x9{new char[]{"xx"}};
+    std::unique_ptr<char,   decltype([](auto p){std::cout<<"DELETINGA.\n"; delete[] p;})> static const xA{new char[]{"xx"}};
+    std::unique_ptr<char,   decltype([](auto p){std::cout<<"DELETINGB.\n"; delete   p;})> static const xB{new char[]{"xx"}};
+    std::unique_ptr<char,   decltype([](auto p){std::cout<<"DELETINGD.\n"; delete[] p;})> static const xC{new char[]{"xx"}};
+    std::unique_ptr<char,   decltype(d1                                                )> static const xD{new char[]{"xx"},d1};
+    std::unique_ptr<char,   decltype(d2                                                )> static const xE{new char[]{"xx"},d2};
+    if (not c_string_io) c_string_io = "xx";                      // TODO??: Want to fix warning on this line, some attempts below:
+    if (not c_string_io) c_string_io = const_cast<char *>("xx");  // TODO??: probably NOT good because misuse of const_cast?
+    if (not c_string_io) c_string_io = x1;
+    if (not c_string_io) c_string_io = x2;                        // TODO??: x3,x4 incompatible types
+    if (not c_string_io) c_string_io = x5;
+    if (not c_string_io) c_string_io = x8.get();
+    if (not c_string_io) c_string_io = x9.get();
+    if (not c_string_io) c_string_io = xA.get();
+    if (not c_string_io) c_string_io = xB.get();
+    if (not c_string_io) c_string_io = xC.get();
+    if (not c_string_io) c_string_io = xD.get();
+    if (not c_string_io) c_string_io = xE.get();
+    if (not c_string_io) return "Not set by f()!";
+    std::cout<< strlen(c_string_io) <<", "<<sizeof(c_string_io)<<std::endl;
+    return c_string_io;
+}
 int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
+    char c_string[]{"yyy"};
+    std::cout << f(c_string) << std::endl;
+    std::cout << f(nullptr)  << std::endl;
 
-    Example1::test1 ();
+    //Example1::test1 ();
     //Example2::test1 ();
 
     cout << "###" << endl;
