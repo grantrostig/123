@@ -132,7 +132,7 @@ operator<<( std::ostream & out, Container const & c) {
 
 namespace Detail {  // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 std::string source_loc();           // forward declaration
-extern void stacktrace_register();
+//extern void stacktrace_register();
 void crash_signals_register();
 
 /** gives a source location for printing.  Used for debugging. */
@@ -156,7 +156,7 @@ auto crash_tracer_SIGABRT(int signal_number) -> void {
 /** Prints a stacktrace of crash location.  Used for debugging. */
 auto crash_tracer(int signal_number) -> void {
     cerr << "\n\r:CRASH_ERROR:Got signal number:" << signal_number;
-    cerr << "\n\r:./stack_trace::current():" << std::stacktrace::current() <<":END CRASH_ERROR STACK_TRACE."<<endl;
+    //cerr << "\n\r:./stack_trace::current():" << std::stacktrace::current() <<":END CRASH_ERROR STACK_TRACE."<<endl;
 
     if ( bool is_want_prompt{true}; is_want_prompt ) {
         std::string reply; cout << "CRASH_ERROR: q for exit(1) or CR to continue:"; cout.flush(); cin.clear();
@@ -3486,7 +3486,8 @@ void test1 () {                     std::cout<< "START                Example1 t
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
 } */
 } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-char * f( char * c_string_io) {  // Function signature is fixed, don't change it.
+//char * f( char * c_string_io) {  // Function signature is fixed, don't change it.
+char * f( char c_string_io[]) {  // Function signature is fixed, don't change it.
     char *          x1  {"xx"};
     char            x2[]{"xx"};
     char const      x3[]{"xx"};
@@ -3494,12 +3495,7 @@ char * f( char * c_string_io) {  // Function signature is fixed, don't change it
     char static     x5[]{"xx"};
     auto d1{[](auto p){std::cout<<"DELETINGd1.\n"; delete[] p;}};
     auto d2{[](auto p){std::cout<<"DELETINGd2.\n"; delete   p;}};
-
-  //std::unique_ptr<char[]>                                                               static       x6{new char[]("xx")};  // TODO??: Why not this when below works?
-
-    std::unique_ptr<char[]>                                                               static       x7{new char[]{'x','x',0}};  // TODO??: works when {}s not ()s
-    std::unique_ptr<char[]>                                                               static       x8{new char[]{"xx"}};  // TODO??: works when {}s not ()s
-
+    std::unique_ptr<char[]>                                                               static const x8{new char[]{"xx"}};  // TODO??: works when {}s not ()s
     std::unique_ptr<char[], decltype([](auto p){std::cout<<"DELETING9.\n"; delete[] p;})> static const x9{new char[]{"xx"}};
     std::unique_ptr<char,   decltype([](auto p){std::cout<<"DELETINGA.\n"; delete[] p;})> static const xA{new char[]{"xx"}};
     std::unique_ptr<char,   decltype([](auto p){std::cout<<"DELETINGB.\n"; delete   p;})> static const xB{new char[]{"xx"}};
