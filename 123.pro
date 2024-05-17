@@ -61,6 +61,7 @@ LIBS += \
         #-lasan                  \
                                 \
         #-lstdc++_libbacktrace   \ # fails: workaround for missing: -lstdc++_libbacktrace also:--enable-libstdcxx-backtrace also -static-libstdc++       \
+        -lstdc++exp     \
         #-lstdc++                \ #  Pedantic not needed???
         #-lc++                \ #  clag Pedantic not needed???
         #-static-libstdc++       \

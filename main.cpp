@@ -41,9 +41,8 @@
 //#include "global_entities.h"
 #include <cmath>
 #include <gsl/gsl> // sudo dnf install  guidelines-support-library-devel
-
+#include <boost/dynamic_bitset.hpp>
 //#include <bits/stdc++.h>
-
 #include <bitset>
 #include <bit>
 #include <cassert>
@@ -54,6 +53,7 @@
 #include <optional>
 #include <stdfloat>
 #include <string>
+#include <string_view>
 #include <source_location>
 #include <stacktrace>
 #include <vector>
@@ -104,6 +104,7 @@ template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 template <typename Container>
 concept Insertable = requires( std::ostream & out ) {
     requires not std::same_as<std::string, Container>;                                    // OR $ std::is_same <std::string, Container>::value OR std::is_same_v<std::string, Container>;
+    requires not std::same_as<std::string_view, Container>;                                    // OR $ std::is_same <std::string, Container>::value OR std::is_same_v<std::string, Container>;
     { out << typename Container::value_type {} } -> std::convertible_to<std::ostream & >; // OR just $ { out << typename Container::value_type {} };
 };
 
@@ -156,7 +157,7 @@ auto crash_tracer_SIGABRT(int signal_number) -> void {
 /** Prints a stacktrace of crash location.  Used for debugging. */
 auto crash_tracer(int signal_number) -> void {
     cerr << "\n\r:CRASH_ERROR:Got signal number:" << signal_number;
-    //cerr << "\n\r:./stack_trace::current():" << std::stacktrace::current() <<":END CRASH_ERROR STACK_TRACE."<<endl;
+    cerr << "\n\r:./stack_trace::current():" << std::stacktrace::current() <<":END CRASH_ERROR STACK_TRACE."<<endl;
 
     if ( bool is_want_prompt{true}; is_want_prompt ) {
         std::string reply; cout << "CRASH_ERROR: q for exit(1) or CR to continue:"; cout.flush(); cin.clear();
@@ -249,7 +250,7 @@ auto crash_signals_register() -> void {
 } // End Namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 // ++++++++++++++++ EXAMPLEs begin ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-const std::array<std::string, 3000> WORDS
+const std::array<std::string, 3000> DICTIONARY_WORDS
     { "a",
       "abandon",
       "ability",
@@ -3251,8 +3252,8 @@ const std::array<std::string, 3000> WORDS
       "youth",
       "zone" };
 namespace Example1 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-
-/* Gen AI answers that don't make sense?
+//  std::bitset construction and chunking into 5, 6, 8 bit divided chunks
+    /* *** Strange Gen AI answers that don't make sense to me?
 template <typename T>  // Gen AI answer
 void packBits(const std::vector<T>& data, std::vector<bool>& container) {
     // Check if input data size is a multiple of 4 (number of 6-bit objects per byte)
@@ -3371,8 +3372,8 @@ void test1 () {                     std::cout<< "START                Example1 t
     cout<< "$$ W is bits: 101 0111.\n"; cout<< "$$ Counter.words_.size(): " << counter.words_single_char.size() << ", list: " << counter.words_single_char << endl;
 
     // *** Construct binary key ***
-    using bits6_ut = struct { uint8_t bits6_ :6; };
-    struct bits6_st { uint8_t bits6_ :6; };
+    using  bits6_ut = struct { uint8_t bits6_ :6; };
+    struct bits6_st          { uint8_t bits6_ :6; };
     std::bitset<132> chars_bits{};
 
     for ( size_t i{0}; i < chars_bits.size()/6; ++i) {
@@ -3386,7 +3387,7 @@ void test1 () {                     std::cout<< "START                Example1 t
     print_bitset(chars_bits,6);
 
     // *** Decode binary key to full words vector ***
-    std::vector<std::string> full_words{};
+    std::vector<std::string> result_full_words{};
     std::bitset<132>         mask_ones_6_of_132{   "111111"};
     std::bitset<132>         mask_ones_7th_of_132{"1000000"};
     std::bitset<132>         chars_bits_temp{chars_bits};
@@ -3397,8 +3398,8 @@ void test1 () {                     std::cout<< "START                Example1 t
         std::bitset<132> bits_7_of_132{ bits_6_of_132   | mask_ones_7th_of_132};    // Add top bit, ie. the 7th to make it US ASCII.
 
         size_t index{static_cast<size_t>(bits_7_of_132.to_ulong())};                // Convert US ASCII bits to an integer index.
-        std::string word{WORDS.at(index)};
-        full_words.push_back(word);
+        std::string word{DICTIONARY_WORDS.at(index)};
+        result_full_words.push_back(word);
         chars_bits_temp >>= 6;
         // print_bitset(bits_6_of_132,8);
         // print_bitset(bits_7_of_132,8);
@@ -3406,12 +3407,12 @@ void test1 () {                     std::cout<< "START                Example1 t
         // cout << i <<","<< index<<","<<word << "," << full_words.size()<<endl;
         // print_bitset(chars_bits_temp, 6);
     }
-    cout << "$$ Words after, size: " << full_words.size() <<", "<< full_words << endl;
+    cout << "$$ Words after, size: " << result_full_words.size() <<", "<< result_full_words << endl;
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
 } } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 namespace Example2 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-/*
+// packed struct as alternative to std::bitset example
 struct Key_strange_alt {
     bool wide_bits :132 {1};
 };
@@ -3484,17 +3485,43 @@ void test1 () {                     std::cout<< "START                Example1 t
     //cout << std::hex        << key1.char01 << key1.char02  << key1.char03  << key1.char04  << key1.char05  << key1.char06 <<  endl;
 
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
-} */
+}
 } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+
+namespace Example3 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+// *** the char * Question - experiments on how to remove UB (or non-standard ISO c++) in ChatScript code base.
 //char * f( char * c_string_io) {  // Function signature is fixed, don't change it.
-char * f( char c_string_io[]) {  // Function signature is fixed, don't change it.
+char * fX( char * c_string_io) {
     char *          x1  {"xx"};
+    if (not c_string_io) c_string_io = "xx";
+    return c_string_io;
+}
+
+std::string_view f_sv( char * c_string_io) {
+    //char const *          x1  {"xx"};
+    //if (not c_string_io) c_string_io = "xx";
+    //return c_string_io_view;
+
+    auto junk = c_string_io     ?  c_string_io : "xx";
+    return junk;
+    //return c_string_io     ?  c_string_io : "xx";
+
+  //return not c_string_io ?  "xx" : static_cast<std::  > (c_string_io ;
+}
+
+char const * f( char c_string_io[]) {  // Function signature is fixed, don't change it.
+    char const *    x0  {"xx"};
+    char *          x1  {"xx"};  // return string_literal "abc"; Allowed to return x1 since it is statically allocated.  True of all literals?
     char            x2[]{"xx"};
     char const      x3[]{"xx"};
     char constexpr  x4[]{"xx"};
     char static     x5[]{"xx"};
     auto d1{[](auto p){std::cout<<"DELETINGd1.\n"; delete[] p;}};
     auto d2{[](auto p){std::cout<<"DELETINGd2.\n"; delete   p;}};
+  //x0[1]='e';
+    x1[1]='e';      // ERROR in TCPPPL P.176:  Wrong comment assumes declartion was const, or am I missing something?
+    x2[1]='e';
+  //x3[1]='e';
     std::unique_ptr<char[]>                                                               static const x8{new char[]{"xx"}};  // TODO??: works when {}s not ()s
     std::unique_ptr<char[], decltype([](auto p){std::cout<<"DELETING9.\n"; delete[] p;})> static const x9{new char[]{"xx"}};
     std::unique_ptr<char,   decltype([](auto p){std::cout<<"DELETINGA.\n"; delete[] p;})> static const xA{new char[]{"xx"}};
@@ -3518,13 +3545,24 @@ char * f( char c_string_io[]) {  // Function signature is fixed, don't change it
     std::cout<< strlen(c_string_io) <<", "<<sizeof(c_string_io)<<std::endl;
     return c_string_io;
 }
-int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
+void test1 () {                     std::cout<< "START                Example3 test1. ++++++++++++++++++++++++"<<std::endl;
     char c_string[]{"yyy"};
-    std::cout << f(c_string) << std::endl;
-    std::cout << f(nullptr)  << std::endl;
+    //std::cout << f_sv(c_string) << std::endl;
+    //std::cout << f_sv(nullptr)  << std::endl;
+    std::cout << f_sv(c_string) << std::endl;
+    std::cout << f_sv(nullptr)  << std::endl;
+    std::string my_string {"hello"};
+    std::string_view junk {my_string};
+    std::cout << junk ;
+    std::cout<< "END                  Example3 test1. ++++++++++++++++++++++++"<<std::endl;
+}
 
-    //Example1::test1 ();
-    //Example2::test1 ();
+} // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+
+int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
+  //Example1::test1 ();
+  //Example2::test1 ();
+  //Example3::test1 ();
 
     cout << "###" << endl;
     return EXIT_SUCCESS;
