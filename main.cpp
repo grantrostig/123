@@ -3296,84 +3296,85 @@ void print_bitset(std::bitset<132> bs, int count) {
     }
     cout << "." << endl;
 }
+struct Counter {
+    std::array<uint8_t, 32> words_single_char{
+                                               '@',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               //  std::rand()/ ((RAND_MAX + 1u) / 256),
+                                               'A',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'B',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'C',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'Z',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '[',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '\\',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               ']',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '^',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '_',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '\'',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'a',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'b',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'c',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'z',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '{',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '|',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '}',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '~',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W' };
+    //  '.' };  // or more chars, they will simply be ignored
+};
 
 void test1 () {                     std::cout<< "START                Example1 test1. ++++++++++++++++++++++++"<<std::endl;
     std::srand(std::time(nullptr)); // use current time as seed for random generator
-    struct Counter {
-        std::array<uint8_t, 32> words_single_char{
-                                        '@',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        //  std::rand()/ ((RAND_MAX + 1u) / 256),
-                                        'A',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'B',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'C',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'Z',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '[',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '\\',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        ']',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '^',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '_',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '\'',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'a',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'b',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'c',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'z',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '{',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '|',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '}',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        '~',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W',
-                                        // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
-                                        'W' };
-        //  '.' };  // or more chars, they will simply be ignored
-    };
+
     Counter counter{};
     cout<< "$$ W is bits: 101 0111.\n"; cout<< "$$ Counter.words_.size(): " << counter.words_single_char.size() << ", list: " << counter.words_single_char << endl;
 
     // *** Construct binary key ***
-    using  bits6_ut = struct { uint8_t bits6_ :6; };
-    struct bits6_st          { uint8_t bits6_ :6; };
+    // using  Bits6_ut = struct { uint8_t bits6_ :6; };
+    // struct Bits6_st          { uint8_t bits6_ :6; };
     std::bitset<132> chars_bits{};
 
     for ( size_t i{0}; i < chars_bits.size()/6; ++i) {
@@ -3397,7 +3398,9 @@ void test1 () {                     std::cout<< "START                Example1 t
         std::bitset<132> bits_6_of_132{ chars_bits_temp & mask_ones_6_of_132};      // Grab one 6 bit char
         std::bitset<132> bits_7_of_132{ bits_6_of_132   | mask_ones_7th_of_132};    // Add top bit, ie. the 7th to make it US ASCII.
 
-        size_t index{static_cast<size_t>(bits_7_of_132.to_ulong())};                // Convert US ASCII bits to an integer index.
+        size_t index {static_cast<size_t>(bits_7_of_132.to_ulong())};                // Convert US ASCII bits to an integer index.  TODO??: Why did I cast this, when apparently not needed.
+        size_t index2{                    bits_7_of_132.to_ulong() };                // Convert US ASCII bits to an integer index.
+        cout<< index2;
         std::string word{DICTIONARY_WORDS.at(index)};
         result_full_words.push_back(word);
         chars_bits_temp >>= 6;
@@ -3451,7 +3454,7 @@ struct Key {
 
 //uint128_t test128;
 
-void test1 () {                     std::cout<< "START                Example1 test1. ++++++++++++++++++++++++"<<std::endl;
+void test1 () {                     std::cout<< "START                Example2 test1. ++++++++++++++++++++++++"<<std::endl;
     Key key1;  //Key key2{}; Key key3{0};
     cout << "$$ Size Key:"<< sizeof(Key) << endl;
     cout << "$$ Size ull:"<< sizeof(unsigned long long) << endl;
@@ -3484,7 +3487,7 @@ void test1 () {                     std::cout<< "START                Example1 t
     //cout << std::setbase(16) << (long)key1.char01 << (long)key1.char02  << (long)key1.char03  << (long)key1.char04  << (long)key1.char05  << (long)key1.char06 <<  endl;
     //cout << std::hex        << key1.char01 << key1.char02  << key1.char03  << key1.char04  << key1.char05  << key1.char06 <<  endl;
 
-    std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
+    std::cout<< "END                  Example2 test1. ++++++++++++++++++++++++"<<std::endl;
 }
 } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
@@ -3559,10 +3562,109 @@ void test1 () {                     std::cout<< "START                Example3 t
 
 } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
+namespace Example4 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+// boost dynamic_bitset as alternative to std::bitset example
+struct Counter {
+    std::array<uint8_t, 32> words_single_char{
+                                               '@',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               //  std::rand()/ ((RAND_MAX + 1u) / 256),
+                                               'A',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'B',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'C',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'Z',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '[',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '\\',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               ']',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '^',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '_',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '\'',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'a',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'b',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'c',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'z',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '{',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '|',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '}',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               '~',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W',
+                                               // static_cast<uint8_t> ( std::rand()/ ((RAND_MAX + 1u) / 256)),
+                                               'W' };
+    //  '.' };  // or more chars, they will simply be ignored
+};
+
+void test1 () {                     std::cout<< "START                Example4 test1. ++++++++++++++++++++++++"<<std::endl;
+    boost::dynamic_bitset<> chars_bits{7ul};
+    chars_bits.at(1) = 1;
+    chars_bits <<= 1;
+    Counter counter{};
+    cout<< "$$ W is bits: 101 0111.\n"; cout<< "$$ Counter.words_.size(): " << counter.words_single_char.size() << ", list: " << counter.words_single_char << endl;
+    cout<< "$$ char_bits.size(): " << chars_bits.size() <<", content: "<< chars_bits << endl;
+
+    // *** Construct binary key ***
+
+    auto junk {chars_bits << counter.words_single_char.at(1)};
+    cout<< "$$ junk.size(): " << junk.size() <<", content: "<< junk << endl;
+    //static_assert( chars_bits.size() == 6);  TODO??:
+
+    for ( size_t i{0}; i < counter.words_single_char.size(); ++i) {
+        if (i != 0 ) chars_bits  <<= 1;
+        chars_bits <<= 1;
+        //chars_bits <<= counter.words_single_char.at(1);
+        cout<< "$$ in loop, char_bits.size(): " << chars_bits.size() <<", content:"<< chars_bits <<":"<< endl;
+    }
+
+    // *** Decode binary key to full words vector ***
+
+    std::cout<< "END                  Example4 test1. ++++++++++++++++++++++++"<<std::endl;
+}
+} // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
   //Example1::test1 ();
   //Example2::test1 ();
   //Example3::test1 ();
+    Example4::test1 ();
 
     cout << "###" << endl;
     return EXIT_SUCCESS;
