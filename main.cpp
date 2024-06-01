@@ -49,6 +49,7 @@
 #include <chrono>
 #include <climits>
 #include <csignal>
+#include <cstddef>
 #include <iostream>
 #include <optional>
 #include <stdfloat>
@@ -3414,11 +3415,8 @@ void test1 () {                     std::cout<< "START                Example1 t
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
 } } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
-namespace Example2 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-// packed struct as alternative to std::bitset example
-struct Key_strange_alt {
-    bool wide_bits :132 {1};
-};
+namespace Example2 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN // packed struct as alternative to std::bitset example
+struct Key_strange_alt { bool wide_bits :132 {1}; };
 
 #pragma pack(1)
 struct Key {
@@ -3433,27 +3431,10 @@ struct Key {
     uint8_t  char09 :6 {0x3F};
     uint8_t  char10 :6 {0x3F};
     uint8_t  :4;                // filler for 64 bits
-#if 0
-    //uint8_t  char11 :6 {0x3F};
-    //uint8_t  char12 :6 {0x3F};
-    //uint8_t  char13 :6 {0x3F};
-    //uint8_t  char14 :6 {0x3F};
-    //uint8_t  char15 :6 {0x3F};
-    //uint8_t  char16 :6 {0x3F};
-    //uint8_t  char17 :6 {0x3F};
-    //uint8_t  char18 :6 {0x3F};
-    //uint8_t  char19 :6 {0x3F};
-    //uint8_t  char20 :6 {0x3F};
-    //uint8_t  char21 :6 {0x3F};
-    //uint8_t  :2;                // filler for 128 bits
-#endif
 };
 #pragma pack()
-
 // TODO??: What about alignas() and depreciated: "std::aligned_storage"?
-
 //uint128_t test128;
-
 void test1 () {                     std::cout<< "START                Example2 test1. ++++++++++++++++++++++++"<<std::endl;
     Key key1;  //Key key2{}; Key key3{0};
     cout << "$$ Size Key:"<< sizeof(Key) << endl;
@@ -3476,11 +3457,6 @@ void test1 () {                     std::cout<< "START                Example2 t
     cout << std::setbase(6);
     cout << (int)key1.char01 << (int)key1.char02  << (int)key1.char03  << (int)key1.char04  << (int)key1.char05  << (int)key1.char06 <<  endl;
     cout << (int)key1.char07 << (int)key1.char08  << (int)key1.char09  << (int)key1.char10  << endl;
-#if 0
-    cout << (int)key1.char11 << (int)key1.char12  << (int)key1.char13  << (int)key1.char14  << (int)key1.char15  << (int)key1.char16 <<  endl;
-    cout << (int)key1.char17 << (int)key1.char18  << (int)key1.char19  << (int)key1.char20  << endl;
-    cout << (int)key1.char21  << (int)key1.char22 <<  endl;
-#endif
 
     cout << std::setbase(8);
     //cout << std::setbase(16) << (int)key1.char01 << (int)key1.char02  << (int)key1.char03  << (int)key1.char04  << (int)key1.char05  << (int)key1.char06 <<  endl;
@@ -3635,31 +3611,59 @@ struct Counter {
 };
 
 void test1 () {                     std::cout<< "START                Example4 test1. ++++++++++++++++++++++++"<<std::endl;
-    boost::dynamic_bitset<> chars_bits{7ul};
-    chars_bits.at(1) = 1;
-    chars_bits <<= 1;
-    Counter counter{};
-    cout<< "$$ W is bits: 101 0111.\n"; cout<< "$$ Counter.words_.size(): " << counter.words_single_char.size() << ", list: " << counter.words_single_char << endl;
-    cout<< "$$ char_bits.size(): " << chars_bits.size() <<", content: "<< chars_bits << endl;
+    // boost::dynamic_bitset<std::byte> chars_bits{7ul};   // TODO??:
+    // boost::dynamic_bitset<int8_t>  chars_bits2{7ul};   // TODO??:
+    //boost::dynamic_bitset<> chars_bits{7ul};
+    // using Bits_6_t = std::bitset<6>;  // not usable.
+    boost::dynamic_bitset<uint8_t> chars_bits{7ul}; // 0000111
+    boost::dynamic_bitset<uint8_t> chars_bits2{0ul}; // 0000111
+    std::bitset<6> bits_6{0b0'000'001};
+    uint8_t byte_with_bits_6_of_8 {static_cast<uint8_t>(bits_6.to_ulong())};
+    uint8_t byte_with_bits_6_of_8a{0b0'000'001};
+    uint8_t byte_with_bits_6_of_8b{0b0'000'011};
+    uint8_t byte_with_bits_6_of_8c{0b0'000'101};
 
-    // *** Construct binary key ***
+    /* chars_bits.at(1) = 1;
+    // chars_bits <<= 1;
+    // Counter counter{};
+    // cout<< "$$ W is bits: 101 0111.\n"; cout<< "$$ Counter.words_.size(): " << counter.words_single_char.size() << ", list: " << counter.words_single_char << endl;
+    // cout<< "$$ char_bits.size(): " << chars_bits.size() <<", content: "<< chars_bits << endl;
+    // cout<< "$$ sizeof(char_bits) in bytes: " << sizeof(chars_bits)<< endl;
 
-    auto junk {chars_bits << counter.words_single_char.at(1)};
-    cout<< "$$ junk.size(): " << junk.size() <<", content: "<< junk << endl;
-    //static_assert( chars_bits.size() == 6);  TODO??:
+    // // *** Construct binary key ***
+    // auto junk {chars_bits << counter.words_single_char.at(1)}; cout<< "$$ junk.size(): " << junk.size() <<", content: "<< junk << endl;
+    // for ( size_t i{0}; i < counter.words_single_char.size(); ++i) {
+    //     if (i != 0 ) chars_bits  <<= 1;
+    //     chars_bits <<= 1;
+    //     //chars_bits <<= counter.words_single_char.at(1);
+    //     cout<< "$$ in loop, char_bits.size(): " << chars_bits.size() <<", content:"<< chars_bits <<":"<< endl;
+    // } */
+    //chars_bits.append(bits_6_t);
+    chars_bits2.append(byte_with_bits_6_of_8a);
+    chars_bits2.append(byte_with_bits_6_of_8b);
+    chars_bits2.append(byte_with_bits_6_of_8c);
+    cout << "$$ byte,bits:" << (int)byte_with_bits_6_of_8 <<";"<< chars_bits2 << endl;
 
-    for ( size_t i{0}; i < counter.words_single_char.size(); ++i) {
-        if (i != 0 ) chars_bits  <<= 1;
-        chars_bits <<= 1;
-        //chars_bits <<= counter.words_single_char.at(1);
-        cout<< "$$ in loop, char_bits.size(): " << chars_bits.size() <<", content:"<< chars_bits <<":"<< endl;
+    //std::reverse(); //for ( 1;; ) { ; };
+    boost::dynamic_bitset<uint8_t> chars_bits_transformed{132};
+    do {
+        size_t i{chars_bits2.size()};
+        if (i != 0 ) chars_bits_transformed  <<= 1;
+        chars_bits_transformed.set(0, chars_bits2.at(i-1));
+        chars_bits_transformed <<= 1;
+        //chars_bits_transformed |= chars_bits2[i-1];
+        chars_bits2.pop_back();
     }
+    while ( chars_bits2.size() > 0 );
+
+    cout << "$$ bits_transformed:" << chars_bits_transformed << endl;
 
     // *** Decode binary key to full words vector ***
 
     std::cout<< "END                  Example4 test1. ++++++++++++++++++++++++"<<std::endl;
 }
 } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+
 int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
   //Example1::test1 ();
   //Example2::test1 ();
