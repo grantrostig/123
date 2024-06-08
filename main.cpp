@@ -3297,6 +3297,27 @@ void print_bitset(std::bitset<132> bs, int count) {
     }
     cout << "." << endl;
 }
+
+void print_bitset_mem_addrs(std::bitset<132> bs, int count) {
+    //auto ptr_msb_begin{&(bs.data())};
+    auto ptr_msb_begin{&bs};
+    auto ptr_lsb_end{(&bs)+1};
+    //auto ptr_lsb_end_plus_one{&(bs.)+1};
+    auto ptr_lsb_end_plus_one{&(bs)+1};
+    cout << "$$ sizeof bs: "<< sizeof(bs) << endl;
+    cout << "$$ &bs: "<< ptr_msb_begin << endl;
+    cout << "$$ &bs_lsb: "<< ptr_lsb_end << endl;
+    cout << "$$ &bs_lsb_plus_one: "<< ptr_lsb_end_plus_one << endl;
+    cout << "$$ &bs.to_string(): "<< bs.to_string() << endl;
+    for ( int i{bs.size()-1}; i >= 0 ; --i ) {
+        //cout << "index:" << i <<":";
+        //cout << bs[i];
+        //cout << bs.test(i);
+        //if ( i !=0 && i%count ==0 ) cout << "'";
+    }
+    cout << "." << endl;
+}
+
 struct Counter {
     std::array<uint8_t, 32> words_single_char{
                                                '@',
@@ -3386,6 +3407,7 @@ void test1 () {                     std::cout<< "START                Example1 t
         //cout << "$$ Counter, bits: " <<std::setw(3)<< i <<",";
         //print_bitset(chars_bits,6);
     }
+    print_bitset_mem_addrs(chars_bits,6);
     print_bitset(chars_bits,6);
 
     // *** Decode binary key to full words vector ***
@@ -3401,7 +3423,7 @@ void test1 () {                     std::cout<< "START                Example1 t
 
         size_t index {static_cast<size_t>(bits_7_of_132.to_ulong())};                // Convert US ASCII bits to an integer index.  TODO??: Why did I cast this, when apparently not needed.
         size_t index2{                    bits_7_of_132.to_ulong() };                // Convert US ASCII bits to an integer index.
-        cout<< index2;
+        cout<< index2 << ", ";
         std::string word{DICTIONARY_WORDS.at(index)};
         result_full_words.push_back(word);
         chars_bits_temp >>= 6;
@@ -3411,6 +3433,7 @@ void test1 () {                     std::cout<< "START                Example1 t
         // cout << i <<","<< index<<","<<word << "," << full_words.size()<<endl;
         // print_bitset(chars_bits_temp, 6);
     }
+    cout << endl;
     cout << "$$ Words after, size: " << result_full_words.size() <<", "<< result_full_words << endl;
     std::cout<< "END                  Example1 test1. ++++++++++++++++++++++++"<<std::endl;
 } } // END namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
@@ -3419,7 +3442,7 @@ namespace Example2 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN /
 struct Key_strange_alt { bool wide_bits :132 {1}; };
 
 #pragma pack(1)
-struct Key {
+struct Key {  // POD plain old data,
     uint8_t  char01 :6 {0x3F};
     uint8_t  char02 :6 {0x3F};  //uint8_t  char02 :6 {0b1111'1111};
     uint8_t  char03 :6 {0x3F};  //uint8_t  char05 :6 {0b0001'1111};
@@ -3431,6 +3454,7 @@ struct Key {
     uint8_t  char09 :6 {0x3F};
     uint8_t  char10 :6 {0x3F};
     uint8_t  :4;                // filler for 64 bits
+    // int f(){return};  // UDT
 };
 #pragma pack()
 // TODO??: What about alignas() and depreciated: "std::aligned_storage"?
@@ -3616,7 +3640,7 @@ void test1 () {                     std::cout<< "START                Example4 t
     //boost::dynamic_bitset<> chars_bits{7ul};
     // using Bits_6_t = std::bitset<6>;  // not usable.
     boost::dynamic_bitset<uint8_t> chars_bits{7ul}; // 0000111
-    boost::dynamic_bitset<uint8_t> chars_bits2{0ul}; // 0000111
+    boost::dynamic_bitset<uint8_t> chars_bits2{0ul};
     std::bitset<6> bits_6{0b0'000'001};
     uint8_t byte_with_bits_6_of_8 {static_cast<uint8_t>(bits_6.to_ulong())};
     uint8_t byte_with_bits_6_of_8a{0b0'000'001};
@@ -3645,7 +3669,7 @@ void test1 () {                     std::cout<< "START                Example4 t
     cout << "$$ byte,bits:" << (int)byte_with_bits_6_of_8 <<";"<< chars_bits2 << endl;
 
     //std::reverse(); //for ( 1;; ) { ; };
-    boost::dynamic_bitset<uint8_t> chars_bits_transformed{132};
+    boost::dynamic_bitset<uint8_t> chars_bits_transformed{8*3};
     do {
         size_t i{chars_bits2.size()};
         if (i != 0 ) chars_bits_transformed  <<= 1;
@@ -3666,9 +3690,9 @@ void test1 () {                     std::cout<< "START                Example4 t
 
 int main(int argc, char* arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
   //Example1::test1 ();
-  //Example2::test1 ();
+    Example2::test1 ();
   //Example3::test1 ();
-    Example4::test1 ();
+  //Example4::test1 ();
 
     cout << "###" << endl;
     return EXIT_SUCCESS;
