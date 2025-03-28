@@ -97,74 +97,6 @@ inline constexpr std::string    STRING_NULL{"NULL"};    // Value is unset/not-se
 
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 
-// TODO: Consider adding this code, which is NOT yet present: version 0.3+ of project: cpp_output_adapter
-
-// All code below is: version 0.6 of project: cpp_concept_print_container_operator_insert
-/** Requires that a type has insertion operator
-    Concept definition - used by a template below.
-    Some value needs to be incorporated with above text:
-///  Concept using Function Explicit instantiations that are required to generate code for linker.
-///  TODO??: is the only used if definition is in *.cpp file?
-///  https://isocpp.org/wiki/faq/templates#templates-defn-vs-decl
-///  https://stackoverflow.com/questions/495021/why-can-templates-only-be-implemented-in-the-header-file
-//template std::ostream & operator<<( std::ostream & , std::vector<std::string> const & );
-/// Concept using Function Explicit instantiations that are required to generate code for linker.
-//template std::ostream & operator<<( std::ostream & , std::deque<int>          const & );
- ** Prints contents of a container such as a vector of int's.
-    Insertable Concept used by Templated Function definition
-    Older version is here for the record:
-    template<typename T> std::ostream & operator<<(std::ostream & out, std::vector<T> const & v) { // utility f() to print vectors
-    if ( not v.empty() ) {
-        out<<'['; std::copy(v.begin(), v.end(), std::ostream_iterator<T>(out, ", ")); out<<"\b\b]";
-    }
-        return out;
-    }
-*/
-template<typename First, typename Second, typename Third>  // this forward declaration is definitely required to compile
-std::ostream & operator<<( std::ostream & out, std::tuple<First,Second,Third> const & my_tuple);
-
-template<class First, class Second>  // Must precede Streamable
-std::ostream &
-operator<<( std::ostream & out, std::pair<First,Second> const & my_pair) {
-    out << "PAIR_MEMBERS["; out << my_pair.first  <<","<< my_pair.second; out << "]"; return out; }
-
-template<class First, class Second, class Third>   // Must precede Streamable
-                                                  // TODO??: make it variadic. TODO??: what about something like this: std::copy(my_pair.begin(), my_pair.end(), std::ostream_iterator< typename Container::value_type >( out, ">,<" ));
-std::ostream &
-operator<<( std::ostream & out, std::tuple<First,Second,Third> const & my_tuple) {
-    out << "TUPLE_MEMBERS["; out << std::get<0>(my_tuple) << "," << std::get<1>(my_tuple) << "," << std::get<2>(my_tuple); out << "]"; return out; }  //out << "\b\b\b>]"; out.width(); out << std::setw(0);
-
-template <class T>
-concept Streamable
-    = requires( std::ostream & out_concept_parameter ) {
-          { out_concept_parameter << T {} } -> std::convertible_to<std::ostream &>;   // bool concept_function definition()
-      };
-
-template <class Container>
-concept Streamable_container
-    = requires( std::ostream & out ) {
-          requires not std::same_as<std::string, Container>;                          // bool concept_requires requirement()
-          requires not std::same_as<std::string_view, Container>;
-          requires     Streamable<typename Container::value_type>;
-          // OLD WORKING STUFF { out << typename Container::value_type {} } -> std::convertible_to<std::ostream & >; // OR just $ { out << typename Container::value_type {} };
-      };
-
-template<Streamable_container SC>    // Function Template with typename concept being restricted to SC in this case. Similar to Value template
-std::ostream &
-operator<<( std::ostream & out, SC const & sc) { LOGGER_()
-    if ( not sc.empty() ) {
-        out << "[";                    //out.width(9);  // TODO??: neither work, only space out first element. //out << std::setw(9);  // TODO??: neither work, only space out first element.
-        // TODO??: why compile error on?: std::copy(sc.begin(), sc.end(), std::ostream_iterator< typename SC::value_type >( out, ">,<" ));
-        for( bool first{true}; auto const &i : sc) { // this works, but why not compile std::copy?
-            if(first) { out << "<" << i; first = false; }
-            else      { out << ">,<" << i; }
-        }
-        out << ">]" << " ";             // out.width(); out << std::setw(0);
-    } else
-        out << "[CONTAINTER IS EMPTY]";
-    return out;
-}
-
 namespace Detail {  // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 std::string source_loc();           // forward declaration
 extern void stacktrace_register();
@@ -283,6 +215,35 @@ auto crash_signals_register() -> void {
 }
 } // End Namespace NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 // ++++++++++++++++ EXAMPLEs begin ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+#include <utility>
+#include <tuple>
+#include <ostream>
+#include <iostream>
+
+template <typename ...ElementTypes, std::size_t ...Indexs>  // ...ElementTypes is a parameter pack
+void tuple_comma_insertion_stream_helper(std::ostream& os, const std::tuple<ElementTypes...>& tup, const std::index_sequence<Indexs...>&) {
+    (
+        ( os << std::get<Indexs>(tup) << ',' )
+        , ...
+    );  // a fold expression ++17
+}
+
+//namespace junk {
+template <typename ...ElementTypes>
+std::ostream& operator<<(std::ostream& os, const std::tuple<ElementTypes...>& tup) {  // ElementTypes... is a parameter-pack-expansion
+    //const std::index_sequence<1,2,sizeof...(Ts)> is{std::make_index_sequence<sizeof...(Ts)>()};
+    //tuple_streamer_helper(os, tup, is);
+    //tuple_comma_insertion_stream_helper(os, tup, std::make_index_sequence<sizeof...(Ts)>());
+    if constexpr (sizeof...(ElementTypes)) {
+        os << "[";
+        tuple_comma_insertion_stream_helper(os, tup, std::make_index_sequence<sizeof...(ElementTypes) - 1>());
+        os << std::get<sizeof...(ElementTypes) - 1>(tup) << "]";
+    } else { os << "Empty Tuple!"; }
+    return os;
+}
+
 namespace Example1 { // NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 void test1 () {
     std::cout<< "START                Example1 test1. ++++++++++++++++++++++++"<<std::endl;
@@ -291,9 +252,16 @@ void test1 () {
 
 int main(int argc, char const * arv[]) { string my_arv{*arv}; cout << "~~~ argc, argv:"<<argc<<","<<my_arv<<"."<<endl; cin.exceptions( std::istream::failbit); Detail::crash_signals_register();
 
-    std::string                 STRING_QQQ          {"qqq"};
-    std::vector<char>           QQQ                 {STRING_QQQ.begin(),STRING_QQQ.end()};
-    Example1::test1 ();
+    //std::index_sequence<4> junk {};  // compile time is: template args, see cppref index_sequence
+    //cout << std::index_sequence<4>{} << endl;  // see cppref index_sequence
+
+    std::tuple<int, string, int> junk{};
+
+    std::cout << std::make_tuple(111) << std::endl;
+    std::cout << std::make_tuple("abc", 2222) << std::endl;
+    std::cout << std::make_tuple(33.33, "def", 333) << std::endl;
+    std::cout << std::make_tuple("four", 4.4, "ghi", 444) << std::endl;
+    std::cout << "$$empty:" << std::make_tuple() << std::endl;
 
     cout << "###" << endl;
     return EXIT_SUCCESS;

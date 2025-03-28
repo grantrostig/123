@@ -31,7 +31,7 @@ QMAKE_CXXFLAGS += \                     #https://gcc.gnu.org/onlinedocs/gcc-13.2
         #-fconcepts             \
         #-funsigned-char         \
         \
-        -std=c++23		    \
+        -std=c++26		    \
         #-std=gnu++23		    \
         -O0 		            \
         -g3 		            \
